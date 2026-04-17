@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}About BuyNest{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8 text-white text-center">
+    <h1 class="display-6 fw-bold">A realistic ecommerce project, not just a landing page.</h1>
+    <p class="lead">BuyNest now includes a product catalog, customer accounts, cart management, checkout, orders, and dashboard-style pages inspired by large marketplaces.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<section class="section">
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <h4>Catalog-first shopping</h4>
+            <p class="text-muted">Search, categories, product detail pages, ratings, discounts, and featured deals make the storefront feel real.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <h4>Account-based flows</h4>
+            <p class="text-muted">Users can register, log in, recover passwords, manage carts, and place orders through connected Django views.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <h4>Expandable backend</h4>
+            <p class="text-muted">The models now support categories, products, cart items, orders, and order items for future features like payments or admin dashboards.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

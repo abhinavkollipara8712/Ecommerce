@@ -1,0 +1,174 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>{% block title %}{% endblock %}</title>
+  <meta name="description" content="BuyNest is a modern ecommerce storefront with search, deals, carts, checkout, and account dashboards.">
+  <meta name="keywords" content="ecommerce, online shopping, electronics, fashion, marketplace">
+
+  <!-- Favicons -->
+  <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
+  <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
+
+  
+</head>
+
+<body class="index-page">
+
+  <header id="header" class="fixed-top">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between py-3">
+        <h1 class="logo mb-0"><a href="/">BuyNest</a></h1>
+        <form action="/" method="get" class="d-none d-lg-flex align-items-center gap-2 flex-grow-1 mx-4">
+          <input type="text" name="q" value="{{ request.GET.q }}" class="form-control" placeholder="Search mobiles, fashion, appliances and more">
+          <button class="btn btn-warning px-4" type="submit"><i class="bi bi-search"></i></button>
+        </form>
+        <div class="d-flex align-items-center gap-3 text-white">
+          <a class="text-white" href="/orders/">Orders</a>
+          <a class="text-white" href="/profile/">Profile</a>
+          <a class="text-white position-relative" href="/cart/">
+            <i class="bi bi-cart3 fs-4"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ cart_count|default:0 }}</span>
+          </a>
+        </div>
+      </div>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link scrollto active" href="/">Home</a></li>
+          <li><a class="nav-link scrollto" href="/about/">About</a></li>
+          <li><a class="nav-link scrollto" href="/contact/">Support</a></li>
+          {% for category in nav_categories|slice:":4" %}
+          <li><a class="nav-link scrollto" href="/?category={{ category.slug }}">{{ category.name }}</a></li>
+          {% endfor %}
+          <li class="dropdown"><a href="#"><span>{% if request.user.is_authenticated %}{{ request.user.email }}{% else %}Account{% endif %}</span> <i class="bi bi-chevron-down"></i></a>
+            <ul>
+              {% if request.user.is_authenticated %}
+              <li><a href="/orders/">My Orders</a></li>
+              <li><a href="/profile/">My Profile</a></li>
+              <li><a href="/auth/logout/">Logout</a></li>
+              {% else %}
+              <li><a href="/auth/signup/">Register</a></li>
+              <li><a href="/auth/login/">Login</a></li>
+              <li><a href="/auth/forgot-password/">Forgot Password</a></li>
+              {% endif %}
+            </ul>
+          </li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section dark-background">
+
+      <img src="{% static 'assets/img/hero-bg.jpg' %}" alt="" data-aos="fade-in">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row justify-content-center">
+          <div class="col-lg-10">
+            {% if messages %}
+            <div class="mb-4 text-start">
+              {% for message in messages %}
+              <div class="alert alert-{{ message.tags|default:'info' }} shadow-sm">{{ message }}</div>
+              {% endfor %}
+            </div>
+            {% endif %}
+            
+            {% block content%}
+
+            {% endblock content%}
+          </div>
+        </div>
+      </div>
+    </section><!-- /Hero Section -->
+    {% block body %}{% endblock %}
+  <footer id="footer" class="footer dark-background">
+
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-about">
+          <a href="/" class="logo d-flex align-items-center">
+            <span class="sitename">BuyNest</span>
+          </a>
+          <p>Built as a marketplace-style storefront with curated deals, category discovery, secure account access, and order-ready checkout flows.</p>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/cart/">Cart</a></li>
+            <li><a href="/orders/">Orders</a></li>
+            <li><a href="/profile/">Profile</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-6 footer-links">
+          <h4>Categories</h4>
+          <ul>
+            {% for category in nav_categories|slice:":4" %}
+            <li><a href="/?category={{ category.slug }}">{{ category.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+          <h4>Customer Care</h4>
+          <p>24x7 help desk</p>
+          <p>Fast replacements</p>
+          <p>Secure checkout support</p>
+          <p class="mt-4"><strong>Phone:</strong> <span>+91 98765 43210</span></p>
+          <p><strong>Email:</strong> <span>care@buynest.com</span></p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+      <p>© <span>Copyright</span> <strong class="px-1 sitename">BuyNest</strong> <span>All Rights Reserved</span></p>
+    </div>
+
+  </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/php-email-form/validate.js' %}"></script>
+  <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/imagesloaded/imagesloaded.pkgd.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
+
+  <!-- Main JS File -->
+  <script src="{% static 'assets/js/main.js' %}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ product.name }} - BuyNest{% endblock %}
+
+{% block content %}
+<div class="row gy-4 align-items-center">
+  <div class="col-lg-5">
+    <img src="{% static product.image %}" alt="{{ product.name }}" class="img-fluid rounded shadow">
+  </div>
+  <div class="col-lg-7 text-white">
+    <span class="badge bg-warning text-dark mb-3">{{ product.badge }}</span>
+    <h1 class="fw-bold">{{ product.name }}</h1>
+    <p class="mb-2">{{ product.brand }} • {{ product.category.name }}</p>
+    <p class="mb-3">Rated {{ product.rating }} ★ from {{ product.review_count }} verified ratings.</p>
+    <div class="d-flex align-items-center gap-3 mb-3">
+      <h2 class="mb-0">Rs. {{ product.price }}</h2>
+      <span class="text-decoration-line-through">Rs. {{ product.original_price }}</span>
+      <span class="badge bg-success">{{ product.discount_percentage }}% off</span>
+    </div>
+    <p class="lead">{{ product.description }}</p>
+    <p class="mb-4">In stock: {{ product.stock }} units</p>
+    {% if request.user.is_authenticated %}
+    <form method="post" action="/cart/add/{{ product.slug }}/" class="d-flex gap-2 flex-wrap">
+      {% csrf_token %}
+      <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control" style="max-width: 120px;">
+      <input type="hidden" name="next" value="/cart/">
+      <button class="btn btn-danger" type="submit">Add to Cart</button>
+    </form>
+    {% else %}
+    <a href="/auth/login/" class="btn btn-warning">Login to add to cart</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<section class="section">
+  <div class="container">
+    <div class="section-title text-start">
+      <h2>Related Products</h2>
+      <p><span>More from</span> <span class="description-title">{{ product.category.name }}</span></p>
+    </div>
+    <div class="row gy-4">
+      {% for item in related_products %}
+      <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+          <img src="{% static item.image %}" class="card-img-top" alt="{{ item.name }}" style="height: 220px; object-fit: cover;">
+          <div class="card-body">
+            <h5>{{ item.name }}</h5>
+            <p class="text-muted small">{{ item.description|truncatechars:75 }}</p>
+            <strong>Rs. {{ item.price }}</strong>
+            <a href="/products/{{ item.slug }}/" class="btn btn-outline-dark w-100 mt-3">View Product</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

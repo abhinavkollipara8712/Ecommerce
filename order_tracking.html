@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Track Order {{ order.tracking_number }} - BuyNest{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-10 text-center text-white mb-5">
+    <h1 class="display-6 fw-bold mb-1">Track #{{ order.tracking_number }}</h1>
+    <p class="lead mb-0">Real-time updates on your delivery.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="card border-0 shadow-lg">
+          <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="bi bi-truck me-2"></i>Order Status: <span class="badge bg-light text-dark fs-6">{{ order.status }}</span></h4>
+          </div>
+          <div class="card-body p-0">
+            <!-- Progress Timeline -->
+            <div class="p-5">
+              <div class="row text-center g-4">
+                {% for step in status_steps %}
+                <div class="col-md-2 col-3">
+                  <div class="position-relative">
+                    <i class="bi {% if step.status == order.status %}bi-check-circle-fill text-success fs-1{% else %}bi-circle text-muted fs-3{% endif %} mb-2 d-block mx-auto"></i>
+                    <div class="small fw-bold {{ 'text-success fw-semibold' if step.status == order.status else 'text-muted' }}">{{ step.status }}</div>
+                    <div class="text-muted small">{{ step.desc }}</div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            <!-- Details -->
+            <div class="p-4 border-top">
+              <h5 class="mb-3">Delivery Details</h5>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <strong>ETA:</strong> {{ order.estimated_delivery|date:"M d, Y" }} ({{ order.estimated_delivery|timeuntil }})
+                </div>
+                <div class="col-md-6 mb-3">
+                  <strong>Updated:</strong> {{ order.updated_at|date:"M d, Y h:i A" }}
+                </div>
+              </div>
+            </div>
+            <!-- Shipping Info -->
+            <div class="p-4 border-top">
+              <h5 class="mb-3">Shipping Address</h5>
+              <p class="mb-1"><strong>{{ order.shipping_name }}</strong></p>
+              <p class="mb-1">{{ order.shipping_address }}, {{ order.city }}, {{ order.state }} - {{ order.pincode }}</p>
+              <p class="mb-0">Phone: {{ order.phone }}</p>
+            </div>
+            <!-- Order Items -->
+            <div class="p-4 border-top">
+              <h5 class="mb-3">Items ({{ order.items.count }})</h5>
+              {% for item in order.items.all %}
+              <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                <div>
+                  <div class="fw-bold">{{ item.product_name }} x {{ item.quantity }}</div>
+                  <small class="text-muted">Rs. {{ item.unit_price }} each</small>
+                </div>
+                <div class="text-end">
+                  <strong>Rs. {{ item.subtotal }}</strong>
+                </div>
+              </div>
+              {% endfor %}
+              <div class="d-flex justify-content-between pt-3">
+                <span>Total:</span>
+                <strong>Rs. {{ order.total_amount }}</strong>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer text-center bg-light">
+            <a href="{% url 'orders' %}" class="btn btn-outline-primary me-2">← Back to Orders</a>
+            {% if order.status == 'Delivered' %}
+            <span class="badge bg-success fs-6">Thank you for shopping!</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

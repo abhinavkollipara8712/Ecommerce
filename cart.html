@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Cart - BuyNest{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8 text-center text-white">
+    <h1 class="display-6 fw-bold">Your shopping cart</h1>
+    <p class="lead">Review quantities, totals, and shipping details before checkout.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<section class="section">
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-8">
+        {% for item in items %}
+        <div class="card border-0 shadow-sm mb-3">
+          <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+              <h5 class="mb-1">{{ item.product.name }}</h5>
+              <p class="text-muted mb-1">{{ item.product.brand }} • Rs. {{ item.product.price }} each</p>
+              <strong>Subtotal: Rs. {{ item.subtotal }}</strong>
+            </div>
+            <div class="d-flex gap-2">
+              <form method="post" action="/cart/update/{{ item.id }}/" class="d-flex gap-2">
+                {% csrf_token %}
+                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control" style="width: 90px;">
+                <button class="btn btn-outline-dark" type="submit">Update</button>
+              </form>
+              <form method="post" action="/cart/remove/{{ item.id }}/">
+                {% csrf_token %}
+                <button class="btn btn-outline-danger" type="submit">Remove</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info">Your cart is empty. Start by adding products from the homepage.</div>
+        {% endfor %}
+      </div>
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <h4 class="mb-3">Order Summary</h4>
+            <div class="d-flex justify-content-between mb-2"><span>Items</span><strong>{{ count }}</strong></div>
+            <div class="d-flex justify-content-between mb-2"><span>Subtotal</span><strong>Rs. {{ subtotal }}</strong></div>
+            <div class="d-flex justify-content-between mb-2"><span>Delivery</span><strong>Rs. {{ delivery }}</strong></div>
+            <hr>
+            <div class="d-flex justify-content-between mb-3"><span>Total</span><strong>Rs. {{ total }}</strong></div>
+            {% if items %}
+            <form method="post" action="/checkout/" class="d-grid gap-2">
+              {% csrf_token %}
+              <input type="text" name="shipping_name" class="form-control" placeholder="Full name" required>
+              <input type="text" name="phone" class="form-control" placeholder="Phone number" required>
+              <input type="text" name="shipping_address" class="form-control" placeholder="Address" required>
+              <input type="text" name="city" class="form-control" placeholder="City" required>
+              <input type="text" name="state" class="form-control" placeholder="State" required>
+              <input type="text" name="pincode" class="form-control" placeholder="Pincode" required>
+              <button class="btn btn-danger" type="submit">Place Order</button>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
